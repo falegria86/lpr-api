@@ -13,6 +13,18 @@ export class ApiController {
         })
     }
 
+    private getIdAlterna = async (tabla: string) => {
+        try {
+            const resultado = await this.pool.request().query(`SELECT TOP 1 ID_ALTERNA FROM ${tabla} ORDER BY ID_ALTERNA DESC`);
+            const { ID_ALTERNA } = resultado.recordset[0];
+
+            return Number(ID_ALTERNA) + 1;
+        } catch (error) {
+            console.log('Error al obtener id: ', error);
+            return null;
+        }
+    }
+
     getMovimientos = async (req: Request, res: Response) => {
         try {
             const resultado = await this.pool.request().query('SELECT * FROM MOVIMIENTOS');
@@ -435,7 +447,13 @@ export class ApiController {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { ID_ALTERNA, ID_ESTADO_EMISOR, ID_EMISOR, ID_TIPO_FUENTE, LLAVE, TIPO_OPERACION, TIPO_INFORMACION, FECHA, HORA, PROCESADO } = req.body;
+        const ID_ALTERNA = await this.getIdAlterna('MOVIMIENTOS_ALERT');
+        if (!ID_ALTERNA) {
+            console.log('Error al obtener ID.');
+            return res.status(500).json({ error: `Error al obtener ID.` });
+        }
+
+        const { ID_ESTADO_EMISOR, ID_EMISOR, ID_TIPO_FUENTE, LLAVE, TIPO_OPERACION, TIPO_INFORMACION, FECHA, HORA, PROCESADO } = req.body;
 
         try {
             await this.pool.request()
@@ -516,8 +534,14 @@ export class ApiController {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        const ID_ALTERNA = await this.getIdAlterna('ALERT_VEHICULO');
+        if (!ID_ALTERNA) {
+            console.log('Error al obtener ID.');
+            return res.status(500).json({ error: `Error al obtener ID.` });
+        }
+
         const datos: any = {
-            ID_ALTERNA: req.body.ID_ALTERNA,
+            ID_ALTERNA,
             ID_ESTADO_EMISOR: req.body.ID_ESTADO_EMISOR,
             ID_EMISOR: req.body.ID_EMISOR,
             ID_CODIGO_OPER: req.body.ID_CODIGO_OPER,
@@ -628,8 +652,13 @@ export class ApiController {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        const ID_ALTERNA = await this.getIdAlterna('MOVIMIENTOS');
+        if (!ID_ALTERNA) {
+            console.log('Error al obtener ID.');
+            return res.status(500).json({ error: `Error al obtener ID.` });
+        }
+
         const {
-            ID_ALTERNA,
             ID_ESTADO_EMISOR,
             ID_EMISOR,
             ID_TIPO_FUENTE,
@@ -734,8 +763,14 @@ export class ApiController {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        const ID_ALTERNA = await this.getIdAlterna('CONSULTA_VEHICULO');
+        if (!ID_ALTERNA) {
+            console.log('Error al obtener ID.');
+            return res.status(500).json({ error: `Error al obtener ID.` });
+        }
+
         const datos: any = {
-            ID_ALTERNA: req.body.ID_ALTERNA,
+            ID_ALTERNA,
             ID_ESTADO_EMISOR: req.body.ID_ESTADO_EMISOR,
             ID_EMISOR: req.body.ID_EMISOR,
             PLACA: req.body.PLACA,

@@ -1,7 +1,6 @@
 import { body, query } from "express-validator";
 
 export const validatePostMovimientoAlert = [
-    body('ID_ALTERNA').isNumeric().withMessage('ID_ALTERNA debe ser numérico').isLength({ max: 10 }).withMessage('ID_ALTERNA no debe exceder 10 caracteres'),
     body('ID_ESTADO_EMISOR').isNumeric().withMessage('ID_ESTADO_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_ESTADO_EMISOR no debe exceder 10 caracteres'),
     body('ID_EMISOR').isNumeric().withMessage('ID_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_EMISOR no debe exceder 10 caracteres'),
     body('ID_TIPO_FUENTE').isNumeric().withMessage('ID_TIPO_FUENTE debe ser numérico').isLength({ max: 3 }).withMessage('ID_TIPO_FUENTE no debe exceder 3 caracteres'),
@@ -27,7 +26,6 @@ export const validatePatchMovimientoAlert = [
 ];
 
 export const validatePostAlertVehiculo = [
-    body('ID_ALTERNA').isNumeric().withMessage('ID_ALTERNA debe ser numérico').isLength({ max: 10 }).withMessage('ID_ALTERNA no debe exceder 10 caracteres'),
     body('ID_ESTADO_EMISOR').isNumeric().withMessage('ID_ESTADO_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_ESTADO_EMISOR no debe exceder 10 caracteres'),
     body('ID_EMISOR').isNumeric().withMessage('ID_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_EMISOR no debe exceder 10 caracteres'),
     body('ID_CODIGO_OPER').isNumeric().withMessage('ID_CODIGO_OPER debe ser numérico').isLength({ max: 10 }).withMessage('ID_CODIGO_OPER no debe exceder 10 caracteres'),
@@ -69,7 +67,6 @@ export const validatePatchAlertVehiculo = [
 ]
 
 export const validatePostMovimiento = [
-    body('ID_ALTERNA').isNumeric().withMessage('ID_ALTERNA debe ser numérico').isLength({ max: 10 }).withMessage('ID_ALTERNA no debe exceder 10 caracteres'),
     body('ID_ESTADO_EMISOR').isNumeric().withMessage('ID_ESTADO_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_ESTADO_EMISOR no debe exceder 10 caracteres'),
     body('ID_EMISOR').isNumeric().withMessage('ID_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_EMISOR no debe exceder 10 caracteres'),
     body('ID_TIPO_FUENTE').isNumeric().withMessage('ID_TIPO_FUENTE debe ser numérico').isLength({ max: 3 }).withMessage('ID_TIPO_FUENTE no debe exceder 3 caracteres'),
@@ -99,7 +96,6 @@ export const validatePatchMovimiento = [
 ]
 
 export const validatePostConsultaVehiculo = [
-    body('ID_ALTERNA').isNumeric().withMessage('ID_ALTERNA debe ser numérico').isLength({ max: 10 }).withMessage('ID_ALTERNA no debe exceder 10 caracteres'),
     body('ID_ESTADO_EMISOR').isNumeric().withMessage('ID_ESTADO_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_ESTADO_EMISOR no debe exceder 10 caracteres'),
     body('ID_EMISOR').isNumeric().withMessage('ID_EMISOR debe ser numérico').isLength({ max: 10 }).withMessage('ID_EMISOR no debe exceder 10 caracteres'),
     body('PLACA').isString().withMessage('PLACA debe ser una cadena de texto').isLength({ max: 10 }).withMessage('PLACA no debe exceder 10 caracteres'),
