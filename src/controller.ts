@@ -703,7 +703,7 @@ export class ApiController {
                     VALUES (@ID_ALTERNA, @ID_ESTADO_EMISOR, @ID_EMISOR, @ID_TIPO_FUENTE, @LLAVE, @TIPO_OPERACION, @TIPO_INFORMACION, @TIPO_ESTATUS_REG, @FECHA, @HORA, @PROCESADO_REPUVE, @PROCESADO_VRYR)
                 `);
 
-            return res.status(201).json(req.body);
+            return res.status(201).json({...req.body, LLAVE, FECHA, HORA});
         } catch (error) {
             console.log(`Error al insertar movimiento: ${error}`);
             return res.status(500).json({ error: `Error al insertar movimiento: ${error}` })
