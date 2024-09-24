@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import sql, { ConnectionPool } from "mssql";
 import { dbConfig } from "./config/dbConfig";
+import { getFecha } from "./utils/getDate";
+import { getHora } from "./utils/getHora";
 
 export class ApiController {
     private pool: ConnectionPool;
@@ -453,7 +455,11 @@ export class ApiController {
             return res.status(500).json({ error: `Error al obtener ID.` });
         }
 
-        const { ID_ESTADO_EMISOR, ID_EMISOR, ID_TIPO_FUENTE, LLAVE, TIPO_OPERACION, TIPO_INFORMACION, FECHA, HORA, PROCESADO } = req.body;
+        const LLAVE = `18-19-${ID_ALTERNA}`;
+        const FECHA = getFecha();
+        const HORA = getHora();
+
+        const { ID_ESTADO_EMISOR, ID_EMISOR, ID_TIPO_FUENTE, TIPO_OPERACION, TIPO_INFORMACION, PROCESADO } = req.body;
 
         try {
             await this.pool.request()
@@ -472,7 +478,7 @@ export class ApiController {
                     VALUES (@ID_ALTERNA, @ID_ESTADO_EMISOR, @ID_EMISOR, @ID_TIPO_FUENTE, @LLAVE, @TIPO_OPERACION, @TIPO_INFORMACION, @FECHA, @HORA, @PROCESADO)
                 `);
 
-            return res.status(201).json(req.body);
+            return res.status(201).json({ ...req.body, LLAVE, FECHA, HORA });
         } catch (error) {
             console.log('Error al insertar movimiento alert: ', error);
             return res.status(500).json({ error: `Error al insertar movimiento alert: ${error}` });
@@ -540,25 +546,27 @@ export class ApiController {
             return res.status(500).json({ error: `Error al obtener ID.` });
         }
 
+        const FECHA_ALTA = getFecha();
+
         const datos: any = {
             ID_ALTERNA,
             ID_ESTADO_EMISOR: req.body.ID_ESTADO_EMISOR,
             ID_EMISOR: req.body.ID_EMISOR,
             ID_CODIGO_OPER: req.body.ID_CODIGO_OPER,
             PLACA: req.body.PLACA,
-            FECHA_HORA: req.body.FECHA_HORA,
+            FECHA_HORA: new Date().toISOString(),
             ESTATUS_REGISTRO: req.body.ESTATUS_REGISTRO,
             ORIGEN_ALERTA: req.body.ORIGEN_ALERTA,
             TIPO_ESTATUS_REG: req.body.TIPO_ESTATUS_REG,
-            FECHA_ALTA: req.body.FECHA_ALTA,
+            FECHA_ALTA,
             VIN: req.body.VIN || null,
             FOLIO_911: req.body.FOLIO_911 || null,
             CARPETA_INV: req.body.CARPETA_INV || null,
             OBSERVACIONES: req.body.OBSERVACIONES || null,
             FOLIO_CARPETA: req.body.FOLIO_CARPETA || null,
-            FECHA_ACT: req.body.FECHA_ACT || null,
-            CODIGO_CIERRE: req.body.CODIGO_CIERRE || null,
-            FECHA_CIERRE: req.body.FECHA_CIERRE || null
+            FECHA_ACT: null,
+            CODIGO_CIERRE: null,
+            FECHA_CIERRE: null
         };
 
         try {
@@ -575,7 +583,7 @@ export class ApiController {
 
             await request.query(query);
 
-            return res.status(201).json(req.body);
+            return res.status(201).json(datos);
         } catch (error) {
             return res.status(500).json({ error: `Error al insertar alerta de vehículo: ${error}` });
         }
@@ -601,13 +609,11 @@ export class ApiController {
             'ESTATUS_REGISTRO',
             'ORIGEN_ALERTA',
             'TIPO_ESTATUS_REG',
-            'FECHA_ALTA',
             'VIN',
             'FOLIO_911',
             'CARPETA_INV',
             'OBSERVACIONES',
             'FOLIO_CARPETA',
-            'FECHA_ACT',
             'CODIGO_CIERRE',
             'FECHA_CIERRE',
         ];
@@ -620,6 +626,11 @@ export class ApiController {
                 request.input(field, typeof value === "number" ? sql.Numeric : sql.NVarChar, value);
             }
         }
+
+        const FECHA_ACT = new Date().toISOString();
+        request.input('FECHA_ACT', sql.Date, FECHA_ACT);
+
+        fieldsToUpdate.push(`FECHA_ACT = @FECHA_ACT`);
 
         if (fieldsToUpdate.length === 0) {
             return res.status(400).json({ error: 'No se proporcionaron campos para actualizar.' });
@@ -658,16 +669,17 @@ export class ApiController {
             return res.status(500).json({ error: `Error al obtener ID.` });
         }
 
+        const LLAVE = `18-19-${ID_ALTERNA}`;
+        const FECHA = getFecha();
+        const HORA = getHora();
+
         const {
             ID_ESTADO_EMISOR,
             ID_EMISOR,
             ID_TIPO_FUENTE,
-            LLAVE,
             TIPO_OPERACION,
             TIPO_INFORMACION,
             TIPO_ESTATUS_REG,
-            FECHA,
-            HORA,
             PROCESADO_REPUVE,
             PROCESADO_VRYR,
         } = req.body;
@@ -774,7 +786,7 @@ export class ApiController {
             ID_ESTADO_EMISOR: req.body.ID_ESTADO_EMISOR,
             ID_EMISOR: req.body.ID_EMISOR,
             PLACA: req.body.PLACA,
-            FECHA_HORA: req.body.FECHA_HORA,
+            FECHA_HORA: new Date().toISOString(),
             TIPO_LECTOR: req.body.TIPO_LECTOR,
             NUMERO_LECTOR: req.body.NUMERO_LECTOR,
             SENTIDO: req.body.SENTIDO,
@@ -798,7 +810,7 @@ export class ApiController {
 
             await request.query(query);
 
-            return res.status(201).json(req.body);
+            return res.status(201).json(datos);
         } catch (error) {
             return res.status(500).json({ error: `Error al insertar consulta de vehículo: ${error}` });
         }
